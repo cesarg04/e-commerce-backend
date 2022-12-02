@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Role_id 
+// 1 = stored
+// 2 = user
+model User  {
+  id Int @id @default(autoincrement())
+  email String @unique
+  name String
+  username String @unique
+  password String
+  role Role @default(USER)
+  googleAuth Boolean @default(false)
+  products Products[]
+  cartStore Cart[]
+  createdAt DateTime @default(now())
+  stored Stored[]
+}
+
+model Products {
+  id Int @id @default(autoincrement())
+  name String
+  image String
+  price Decimal
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  cart Cart[]
+  stored Stored[]
+  stock Int
+  createdAt DateTime @default(now())
+}
+
+model Cart {
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  product Products @relation(fields: [productId], references: [id])
+  productId Int
+  createdAt DateTime @default(now())
+  @@id([userId, productId])
+}
+
+enum Role{
+  SUPERADMIN
+  ADMIN
+  USER
+}
+
+model Stored {
+  id Int @id @default(autoincrement())
+  userId Int
+  productId Int
+  status Status_stored
+  amaunt Int @default(1)
+  user User @relation(fields: [userId], references: [id])
+  product Products @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+enum Status_stored{
+  PENDING_PAY
+  PAID_OUT
+  SEND
+  DELIVERED
+}
+
