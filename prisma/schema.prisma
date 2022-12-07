@@ -25,6 +25,7 @@ model User  {
   cartStore Cart[]
   createdAt DateTime @default(now())
   stored Stored[]
+  delivered_information Delivered_information[]
 }
 
 model Products {
@@ -38,6 +39,8 @@ model Products {
   stored Stored[]
   stock Int
   createdAt DateTime @default(now())
+  categoryId Int?
+  category Category[] 
 }
 
 model Cart {
@@ -67,9 +70,32 @@ model Stored {
 }
 
 enum Status_stored{
+  CANCELLED
   PENDING_PAY
   PAID_OUT
   SEND
   DELIVERED
 }
 
+model Delivered_information {
+  name String
+  surname String
+  phone_number String
+  address String
+  apt_or_suite String?
+  country String
+  city String
+  state String
+  postal_code String
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  @@id([userId])
+
+}
+
+
+model Category {
+  id Int @id @default(autoincrement())
+  name String
+  product Products[]
+}

@@ -25,7 +25,7 @@ export const add_cart = async( req: RequestCustom, res: Response ) => {
         })
     } catch (error) {
         console.log(error)
-        res.json({
+        res.status(500).json({
             message: 'Add cart not work, try again'
         })
 
@@ -44,35 +44,26 @@ export const get_cart_user = async( req: RequestCustom, res: Response ) => {
             where: {
                 userId: Number(id) 
             },
-            select: {product: true, user: true}
+            include: {product: {
+                select: {
+                    id: true,
+                    price: true,
+                    image: true,
+                    user: {
+                        select: {
+                            id: true,
+                            username: true,
+                            name: true,
+                            email: true
+                        }
+                    }
+                }
+            }}
         })
 
         if (!cart) return res.status(404).json({Message: 'No cart found'})
 
-        const cartuser:Cart [] = []
-
-        cart.map((car) => {
-
-            const product = {
-                id: car.product.id,
-                name: car.product.name,
-                image: car.product.image,
-                price: car.product.price,
-                stock: car.product.stock
-            }
-
-            const user = {
-                id: car.user.id,
-                vendor: car.user.name,
-                email: car.user.email,
-                username: car.user.username
-            }
-
-            cartuser.push({product, user})
-
-        })
-
-        res.json({cartuser})
+        res.json({cart})
 
     
 

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { PrismaClient } from '@prisma/client'
-import { User } from "../interfaces/users";
-import bcyptjs, { hash } from 'bcrypt'
+import { Delivered_information, PrismaClient } from '@prisma/client'
+import { User, userId } from "../interfaces/users";
+import bcyptjs from 'bcrypt'
 import { exclude } from "../helpers";
 import { RequestCustom } from "../interfaces/user_request";
 
@@ -121,7 +121,6 @@ export const updateDataUser = async( req: Request, res: Response ) => {
 
 }
 
-
 export const deleteUser = async(req: Request, res: Response) => {
 
     const { id } = req.params;
@@ -152,3 +151,111 @@ export const deleteUser = async(req: Request, res: Response) => {
 
 }
 
+export const get_arrived = async(req: RequestCustom, res: Response) => {
+
+    const { id } = req.user as userId;
+
+    try {
+        
+        const shipping = await prisma.delivered_information.findUnique({
+            where: {
+                userId: id
+            }
+        })
+
+        if (!shipping) return res.status(404).json({message: 'Not shipping information'})
+
+        res.json({
+            shipping
+        })
+
+    } catch (error) {
+        return res.status(500).json(error)
+    }
+
+}
+
+
+export const add_arrived = async(req: RequestCustom, res: Response) => {
+
+    const { id } = req.user as userId;
+    const { name, surname, phone_number, address ,apt_or_suite, country, city, state, postal_code } = req.body as Delivered_information
+    try {
+        
+        const shipping = await prisma.delivered_information.create({
+            data: {
+                name,
+                surname,
+                phone_number,
+                address,
+                apt_or_suite,
+                country,
+                city,
+                state,
+                postal_code,
+                userId: id
+                
+            }
+        })
+
+        res.json({
+            message: 'shipping information created correctly',
+            shipping
+        })
+
+    } catch (error) {
+        return res.status(500).json({error})
+    }
+
+}
+
+export const update_arrived = async(req: RequestCustom, res: Response) => {
+
+    const { id } = req.user as userId;
+
+    const body:Delivered_information = req.body
+
+    try {
+        
+        const shipping = await prisma.delivered_information.update({
+            where: {
+                userId: id
+            },
+            data:{
+                ...body
+            }
+        })
+
+        res.json({
+            message: 'Shipping information updated exitosamente',
+            shipping
+        })
+
+    } catch (error) {
+        return res.status(500).json({error})
+    }
+
+}
+
+export const delete_arrived = async(req: RequestCustom, res: Response) => {
+
+    const { id } = req.user as userId;
+
+    try {
+        
+        const shipping = await prisma.delivered_information.delete({
+            where: {
+                userId: id
+            }
+        })
+
+        res.json({
+            message: 'Shipping information deleted succsessfully',
+            shipping
+        })
+
+    } catch (error) {
+        return res.status(500).json({error})   
+    }
+
+}

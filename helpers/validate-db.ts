@@ -37,19 +37,3 @@ export const validate_username = async( username: string ) => {
 
     if (user) throw new Error('The user is used, try to other user')
 }
-
-
-// export const is_vendor_role = async( id: string ) => {
-
-//     const user = await prisma.user.findUnique({
-//         where: {
-//             id: Number(id)
-//         }
-//     })
-
-//     if (user? != "ADMIN") {
-        
-//     }
-
-
-// }

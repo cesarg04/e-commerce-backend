@@ -5,6 +5,8 @@
       "strict": true,
       "lib": ["esnext"],
       "esModuleInterop": true,
-      "typeRoots": ["./types"]
+      "typeRoots": ["./types"],
+      "target": "ES6",
+      "module": "commonjs",  
     }
   }
