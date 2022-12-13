@@ -5,6 +5,7 @@ import cors from 'cors'
 import swagguerUi from 'swagger-ui-express'
 import swagguerJsdoc from 'swagger-jsdoc'
 import { options } from '../swagguer_options'
+import fileUpload from 'express-fileupload'
 
 // Routes
 import user_routes from '../routes/users.routes'
@@ -57,6 +58,13 @@ class Server{
         this.app.use(cors())
         // Lectura del body
         this.app.use( express.json() )
+
+        //Files Upload
+        this.app.use(fileUpload({
+            useTempFiles: true,
+            tempFileDir: '/tmp',
+            createParentPath: true
+        }))
     }
 
     routes(){

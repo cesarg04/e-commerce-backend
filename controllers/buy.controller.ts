@@ -20,7 +20,6 @@ export const get_products_shopping = async(req: RequestCustom, res: Response) =>
                 select:{
                     id: true,
                     name: true,
-                    image: true, 
                     user: {
                         select: {id: true, name: true}
                     },

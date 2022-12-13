@@ -48,7 +48,6 @@ export const get_cart_user = async( req: RequestCustom, res: Response ) => {
                 select: {
                     id: true,
                     price: true,
-                    image: true,
                     user: {
                         select: {
                             id: true,
